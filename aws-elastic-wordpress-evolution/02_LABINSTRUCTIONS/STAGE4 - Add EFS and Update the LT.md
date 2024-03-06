@@ -19,7 +19,7 @@ for `Transition out of IA` set to `None`
 Untick `Enable encryption of data at rest` .. in production you would leave this on, but for this demo which focusses on architecture it simplifies the implementation. 
 
 Scroll down...  
-For `throughput modes` choose `Basic`   
+For `throughput modes` choose `Bursting`   
 Expand `Additional Settings` and ensure `Performance Mode` is set to `General Purpose`  
 Click `Next`
 
@@ -96,6 +96,9 @@ Next .. add a line to /etc/fstab to configure the EFS file system to mount as /v
 
 ```
 echo -e "$EFSFSID:/ /var/www/html/wp-content efs _netdev,tls,iam 0 0" >> /etc/fstab
+```
+
+```
 mount -a -t efs defaults
 ```
 
@@ -103,6 +106,9 @@ now we need to copy the origin content data back in and fix permissions
 
 ```
 mv /tmp/wp-content/* /var/www/html/wp-content/
+```
+
+```
 chown -R ec2-user:apache /var/www/
 
 ```
@@ -136,9 +142,9 @@ EFSFSID=`echo $EFSFSID | sed -e 's/^"//' -e 's/"$//'`
 
 ```
 
-Find the line which says `dnf install wget php-mysqlnd httpd php-fpm php-mysqli php-json php php-devel stress -y`
+Find the line which says `dnf install wget php-mysqlnd httpd php-fpm php-mysqli mariadb105-server php-json php php-devel stress -y`
 after `stress` add a space and paste in `amazon-efs-utils`  
-it should now look like `dnf install wget php-mysqlnd httpd php-fpm php-mysqli php-json php php-devel stress amazon-efs-utils -y`  
+it should now look like `dnf install wget php-mysqlnd httpd php-fpm php-mysqli mariadb105-server php-json php php-devel stress amazon-efs-utils -y`  
 
 locate `systemctl start httpd` position cursor at the end & press enter twice to add new lines  
 
